@@ -1,0 +1,29 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Windows 状态输出节点图标：显示器 + 上升波形，简洁体现系统监控 -->
+
+    <DrawingImage x:Key="Image_WindowsStatusNode">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- 显示器外框 -->
+                <GeometryDrawing Geometry="M3 4 H21 A1 1 0 0 1 22 5 V14 A1 1 0 0 1 21 15 H12 V17 H15 A1 1 0 0 1 16 18 V19 H8 V18 A1 1 0 0 1 9 17 H12 V15 H3 A1 1 0 0 1 2 14 V5 A1 1 0 0 1 3 4 Z">
+                    <GeometryDrawing.Brush>
+                        <SolidColorBrush Color="White" />
+                    </GeometryDrawing.Brush>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="Black" Thickness="1.5" LineJoin="Round" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- 屏幕内上升波形 -->
+                <GeometryDrawing Geometry="M6 12 L9 9.5 L11 11 L13 7.5 L15 10 L18 6">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="Black" Thickness="1.6" LineJoin="Round" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+</ResourceDictionary>
