@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 
+# 本地构建/部署配置（各机器各自维护，不提交）
+SGammaDeploy.local.props
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

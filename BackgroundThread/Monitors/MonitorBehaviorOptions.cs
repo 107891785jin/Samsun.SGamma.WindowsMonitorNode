@@ -44,6 +44,9 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread.Monitors
         /// <summary>异常 Check 允许的最大快照陈旧倍数。</summary>
         public int HealthSnapshotStaleMultiplier { get; set; } = 3;
 
+        /// <summary>监控日志根目录。（默认与原行为一致；可在启动时注入，避免写死 D:\）</summary>
+        public string LogRootDirectory { get; set; } = @"D:\SAMSUN-Log\SGamma标准日志";
+
         internal int RequiredSamples(MonitorSeverity severity)
         {
             return severity == MonitorSeverity.Warning

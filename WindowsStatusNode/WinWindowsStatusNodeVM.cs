@@ -63,10 +63,17 @@ namespace Samsun.SGamma.WindowsMonitorNode.ViewModels
             TipExtension.Success("监控参数已更新".ToLanguage());
         }
 
-        /// <summary>保存：仅持久化到配置，不立即触发监控应用。</summary>
+        /// <summary>保存：校验后仅把当前编辑的 Param 持久化到配置，不触发监控应用。</summary>
         private void Save()
         {
-            WindowsMonitorBackground.SaveTo(SdkServices.Config);
+            var errors = Validate();
+            if (errors.Count > 0)
+            {
+                TipExtension.Error(string.Join("；", errors));
+                return;
+            }
+
+            Param.WriteTo(SdkServices.Config);
             TipExtension.Success("监控参数已保存".ToLanguage());
         }
 

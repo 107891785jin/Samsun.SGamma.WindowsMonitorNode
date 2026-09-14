@@ -1,0 +1,16 @@
+<Project>
+
+  <!--
+    机器相关路径集中于此，可通过环境变量或本地 props 覆盖，避免改 csproj。
+    默认沿用当前开发机路径以保持可构建；其他机器/CI 请设置 SGammaSdkDir / SGammaDeployDir。
+  -->
+  <PropertyGroup>
+    <SGammaSdkDir Condition="'$(SGammaSdkDir)' == ''">E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk</SGammaSdkDir>
+    <SGammaDeployDir Condition="'$(SGammaDeployDir)' == ''"></SGammaDeployDir>
+  </PropertyGroup>
+
+  <!-- 本地开发机部署目录：各机器各自维护 SGammaDeploy.local.props（已加入 .gitignore，不提交）。 -->
+  <Import Project="$(MSBuildThisFileDirectory)SGammaDeploy.local.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)SGammaDeploy.local.props')" />
+
+</Project>

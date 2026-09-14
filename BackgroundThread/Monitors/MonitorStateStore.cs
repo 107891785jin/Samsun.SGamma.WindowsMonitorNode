@@ -22,7 +22,28 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread.Monitors
 
         public bool IsActive(string ruleKey)
         {
-            return GetRuleState(ruleKey)?.Status == MonitorRuleStatus.Active;
+            var state = GetRuleState(ruleKey);
+            if (state == null) return false;
+            lock (state)
+            {
+                return state.Status == MonitorRuleStatus.Active;
+            }
+        }
+
+        public void Remove(string ruleKey)
+        {
+            if (string.IsNullOrWhiteSpace(ruleKey)) return;
+            _states.TryRemove(ruleKey, out _);
+        }
+
+        public void RemoveWhere(Func<MonitorRuleState, bool> predicate)
+        {
+            if (predicate == null) return;
+            foreach (var key in _states.Keys)
+            {
+                if (_states.TryGetValue(key, out var state) && predicate(state))
+                    _states.TryRemove(key, out _);
+            }
         }
 
         public void MarkResourceSample(string resourceKey, DateTime capturedAt, bool valid, string error)

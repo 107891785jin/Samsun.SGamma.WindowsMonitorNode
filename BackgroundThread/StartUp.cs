@@ -10,6 +10,8 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread
     /// </summary>
     public class StartUp : IStartup
     {
+        private readonly IWorkflowDesigner _workflowDesigner;
+
         public string Name => "WindowsMonitorBackgroundThread";
 
         public StartUp()
@@ -17,10 +19,10 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread
             // 从 configManager 读取后台监控参数
             WindowsMonitorBackground.LoadFrom(SdkServices.Config);
 
-            IWorkflowDesigner workflowDesigner = SdkServices.WorkflowDesigner;
-            if (workflowDesigner != null)
+            _workflowDesigner = SdkServices.WorkflowDesigner;
+            if (_workflowDesigner != null)
             {
-                workflowDesigner.ProjectSaving += WorkflowDesigner_ProjectSaving;
+                _workflowDesigner.ProjectSaving += WorkflowDesigner_ProjectSaving;
             }
         }
 
@@ -36,6 +38,10 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread
 
         public void Stop()
         {
+            if (_workflowDesigner != null)
+            {
+                _workflowDesigner.ProjectSaving -= WorkflowDesigner_ProjectSaving;
+            }
             WindowsMonitorBackground.Stop();
         }
     }

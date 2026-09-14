@@ -57,7 +57,7 @@ namespace Samsun.SGamma.WindowsMonitorNode.Core
 
         public string GetGroupName()
         {
-            return "系统监控".ToLanguage();
+            return "应用工具".ToLanguage();
         }
 
         public object GetGroupIcon()

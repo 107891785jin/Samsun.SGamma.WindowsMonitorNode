@@ -47,13 +47,14 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread.Monitors
 
 
             string level = warning ? "警告" : "异常";
-            var sb = new StringBuilder($"\n【{MonitorUtils.FormatNow()}】{level}：电脑CPU超出！（{s.UsagePercent}%）");
+            string sourceLabel = s.MetricSource == CpuMetricSource.ProcessorUtility ? "Processor Utility" : "Processor Time";
+            var sb = new StringBuilder($"\n【{MonitorUtils.FormatNow()}】{level}：电脑CPU超出！（{s.UsagePercent}%）·系统CPU口径: {sourceLabel}");
             int rank = 1;
             foreach (var p in s.TopProcesses.Take(10))
                 sb.AppendLine().Append($"\t\t 进程{rank++}：{p.Name}[PID={p.ProcessId}]（CPU：{p.Percent}%）");
 
             return Valid(key, "CPU", severity, violation, sb.ToString(),
-                $"\n【{MonitorUtils.FormatNow()}】恢复：CPU已恢复（{s.UsagePercent}%）");
+                $"\n【{MonitorUtils.FormatNow()}】恢复：CPU已恢复（{s.UsagePercent}%）·系统CPU口径: {sourceLabel}");
         }
 
         public MonitorRuleResult EvaluateMemory(MemorySnapshot s, bool warning, SystemMonitorParam cfg)

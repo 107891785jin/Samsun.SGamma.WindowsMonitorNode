@@ -1,53 +1,62 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<AssemblyName>Samsun.SGamma.WindowsMonitorNode</AssemblyName>
-		<TargetFramework>net10.0-windows7.0</TargetFramework>
-		<Version>1.0.0</Version>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<FileVersion>1.0.0.0</FileVersion>
-		<Nullable>disable</Nullable>
-		<UseWPF>true</UseWPF>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<RootNamespace>Samsun.SGamma.WindowsMonitorNode</RootNamespace>
-		<PlatformTarget>x64</PlatformTarget>
-	</PropertyGroup>
+        <PropertyGroup>
+                <AssemblyName>Samsun.SGamma.WindowsMonitorNode</AssemblyName>
+                <TargetFramework>net10.0-windows7.0</TargetFramework>
+                <Version>1.0.0</Version>
+                <AssemblyVersion>1.0.0.0</AssemblyVersion>
+                <FileVersion>1.0.0.0</FileVersion>
+                <Nullable>disable</Nullable>
+                <UseWPF>true</UseWPF>
+                <ImplicitUsings>enable</ImplicitUsings>
+                <RootNamespace>Samsun.SGamma.WindowsMonitorNode</RootNamespace>
+                <PlatformTarget>x64</PlatformTarget>
+        </PropertyGroup>
 
-	<ItemGroup>
-		<Reference Include="CommunityToolkit.Mvvm">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\CommunityToolkit.Mvvm.dll</HintPath>
-		</Reference>
-		<Reference Include="HandyControl">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\HandyControl.dll</HintPath>
-		</Reference>
-		<Reference Include="Samsun.SGamma.Common">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\Samsun.SGamma.Common.dll</HintPath>
-		</Reference>
-		<Reference Include="Samsun.SGamma.Correspondence">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\Samsun.SGamma.Correspondence.dll</HintPath>
-		</Reference>
-		<Reference Include="Samsun.SGamma.Common.UI">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\Samsun.SGamma.Common.UI.dll</HintPath>
-		</Reference>
-		<Reference Include="Samsun.SGamma.FlowTools.Base">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\Samsun.SGamma.FlowTools.Base.dll</HintPath>
-		</Reference>
-		<Reference Include="Samsun.SGamma.Log">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\Samsun.SGamma.Log.dll</HintPath>
-		</Reference>
-		<Reference Include="Samsun.SGamma.SDK">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\Samsun.SGamma.SDK.dll</HintPath>
-		</Reference>
-		<Reference Include="Samsun.SGamma.Utils">
-			<HintPath>E:\Code\Samsun.SGamma.StationNode\SGamma3.0_sdk\Samsun.SGamma.Utils.dll</HintPath>
-		</Reference>
-	</ItemGroup>
+        <ItemGroup>
+                <PackageReference Include="System.Management" Version="10.0.1" />
+        </ItemGroup>
 
-	<ItemGroup>
-		<Resource Include="Resources\Icons.xaml" />
-	</ItemGroup>
+        <ItemGroup>
+                <Reference Include="CommunityToolkit.Mvvm">
+                        <HintPath>$(SGammaSdkDir)\CommunityToolkit.Mvvm.dll</HintPath>
+                </Reference>
+                <Reference Include="HandyControl">
+                        <HintPath>$(SGammaSdkDir)\HandyControl.dll</HintPath>
+                </Reference>
+                <Reference Include="Samsun.SGamma.Common">
+                        <HintPath>$(SGammaSdkDir)\Samsun.SGamma.Common.dll</HintPath>
+                </Reference>
+                <Reference Include="Samsun.SGamma.Correspondence">
+                        <HintPath>$(SGammaSdkDir)\Samsun.SGamma.Correspondence.dll</HintPath>
+                </Reference>
+                <Reference Include="Samsun.SGamma.Common.UI">
+                        <HintPath>$(SGammaSdkDir)\Samsun.SGamma.Common.UI.dll</HintPath>
+                </Reference>
+                <Reference Include="Samsun.SGamma.FlowTools.Base">
+                        <HintPath>$(SGammaSdkDir)\Samsun.SGamma.FlowTools.Base.dll</HintPath>
+                </Reference>
+                <Reference Include="Samsun.SGamma.Log">
+                        <HintPath>$(SGammaSdkDir)\Samsun.SGamma.Log.dll</HintPath>
+                </Reference>
+                <Reference Include="Samsun.SGamma.SDK">
+                        <HintPath>$(SGammaSdkDir)\Samsun.SGamma.SDK.dll</HintPath>
+                </Reference>
+                <Reference Include="Samsun.SGamma.Utils">
+                        <HintPath>$(SGammaSdkDir)\Samsun.SGamma.Utils.dll</HintPath>
+                </Reference>
+        </ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(SkipXCopyPostBuild)' != 'true'">
-		<Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;F:\项目\SGamma_V3.2.0_20260831114313\bin\&quot; /Y" />
-	</Target>
+        <ItemGroup>
+                <Resource Include="Resources\Icons.xaml" />
+        </ItemGroup>
+
+        <!--
+          部署：仅在设置 SGammaDeployDir 时复制产物到目标目录。
+          以环境变量 / 本地 props 指定路径，避免 csproj 硬编码+F: 盘。
+        -->
+        <Target Name="SGammaDeploy" AfterTargets="Build" Condition="'$(SkipXCopyPostBuild)' != 'true' And '$(SGammaDeployDir)' != ''">
+                <MakeDir Directories="$(SGammaDeployDir)" />
+                <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SGammaDeployDir)" />
+        </Target>
 </Project>

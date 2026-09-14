@@ -20,6 +20,9 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread
         public DateTime CapturedAt { get; internal set; }
         public double CpuPercent { get; internal set; }
         public double MemoryPercent { get; internal set; }
+        public CpuMetricSource CpuMetricSource { get; internal set; }
+        public DateTime CpuCapturedAt { get; internal set; }
+        public double CpuSampleAgeMs { get; internal set; }
         public string DiskSummary { get; internal set; } = string.Empty;
         public string PingSummary { get; internal set; } = string.Empty;
         public string WarningText { get; internal set; } = string.Empty;
@@ -72,6 +75,8 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread
             lock (_lock)
             {
                 _configModel = param.Clone();
+                // 清理已失效的规则状态（幽灵异常修复）：关闭监控/删除IP/路径后移除旧 Active 状态
+                try { _service?.ReconcileConfiguration(_configModel); } catch { }
             }
         }
 
@@ -169,11 +174,22 @@ namespace Samsun.SGamma.WindowsMonitorNode.BackgroundThread
                 // 数值快照
                 var cpu = service.LatestCpu;
                 status.CpuPercent = cpu != null && cpu.IsValid ? cpu.UsagePercent : -1;
+                if (cpu != null && cpu.IsValid)
+                {
+                    status.CpuMetricSource = cpu.MetricSource;
+                    status.CpuCapturedAt = cpu.CapturedAt;
+                    if (cpu.CapturedAt != default)
+                        status.CpuSampleAgeMs = (DateTime.Now - cpu.CapturedAt).TotalMilliseconds;
+                }
 
                 var mem = service.LatestMemory;
                 if (mem != null && mem.IsValid)
                 {
                     status.MemoryPercent = mem.UsagePercent;
+                }
+                else
+                {
+                    status.MemoryPercent = -1;
                 }
                 status.DiskSummary = BuildDiskSummary(service);
                 status.PingSummary = BuildPingSummary(service);
